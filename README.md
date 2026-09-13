@@ -3,7 +3,7 @@
 A quiet hand in the late-night card room — Klondike solitaire in a single HTML file.
 No build step, no dependencies, no tracking. Open the file and play.
 
-**[▶ Play](https://YOUR-USERNAME.github.io/midnight-klondike/)**
+**[▶ Play](https://daikiito-dk.github.io/midnight-klondike/)**
 
 ![Midnight Klondike](screenshot.png)
 
