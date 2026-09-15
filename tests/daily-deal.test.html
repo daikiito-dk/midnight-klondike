@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Midnight Klondike — Daily Deal tests</title>
+</head>
+<body>
+<h1>Daily Deal tests</h1>
+<pre id="output"></pre>
+<script src="../js/daily-rng.js"></script>
+<script src="../js/daily-deal.js"></script>
+<script>
+"use strict";
+
+const out = document.getElementById("output");
+let passed = 0;
+let failed = 0;
+
+function check(name, condition) {
+  if (condition) {
+    passed++;
+    out.textContent += "PASS  " + name + "\n";
+  } else {
+    failed++;
+    out.textContent += "FAIL  " + name + "\n";
+  }
+}
+
+const date = "2026-09-15";
+const a = MidnightDailyDeal.createDeal(date);
+const b = MidnightDailyDeal.createDeal(date);
+
+check("same date produces identical deal", JSON.stringify(a) === JSON.stringify(b));
+check("tableau has 7 columns", a.tableau.length === 7);
+check("tableau has 28 cards", a.tableau.flat().length === 28);
+check("column sizes are 1 through 7", a.tableau.every((pile, index) => pile.length === index + 1));
+check("only top card of each column is face up", a.tableau.every((pile) => pile.every((card, index) => card.faceUp === (index === pile.length - 1))));
+check("remaining stock has 24 cards", a.remaining.length === 24);
+check("all 52 cards remain unique", new Set(a.deck).size === 52);
+check("deal preserves full deck order", JSON.stringify(a.deck) === JSON.stringify(a.tableau.flat().map(card => card.id).concat(a.remaining)));
+
+out.textContent += "\n" + passed + " passed, " + failed + " failed\n";
+if (failed) document.title = "FAIL — Daily Deal tests";
+</script>
+</body>
+</html>
