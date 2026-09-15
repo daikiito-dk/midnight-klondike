@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Midnight Klondike — Daily RNG tests</title>
+</head>
+<body>
+<h1>Daily RNG tests</h1>
+<pre id="output"></pre>
+<script src="../js/daily-rng.js"></script>
+<script>
+"use strict";
+
+const out = document.getElementById("output");
+let passed = 0;
+let failed = 0;
+
+function check(name, condition) {
+  if (condition) {
+    passed++;
+    out.textContent += "PASS  " + name + "\n";
+  } else {
+    failed++;
+    out.textContent += "FAIL  " + name + "\n";
+  }
+}
+
+const a = MidnightDailyRng.createDailyDeck("2026-09-15");
+const b = MidnightDailyRng.createDailyDeck("2026-09-15");
+const c = MidnightDailyRng.createDailyDeck("2026-09-16");
+
+check("same date produces identical deck", JSON.stringify(a) === JSON.stringify(b));
+check("different dates normally produce different decks", JSON.stringify(a) !== JSON.stringify(c));
+check("deck contains 52 unique cards", a.length === 52 && new Set(a).size === 52);
+check("deck contains every suit/rank combination", new Set(a).size === 52 && a.every(id => /^\d-(?:[1-9]|1[0-3])$/.test(id)));
+
+const rng1 = MidnightDailyRng.createRng(MidnightDailyRng.seedForDate("2026-09-15"));
+const rng2 = MidnightDailyRng.createRng(MidnightDailyRng.seedForDate("2026-09-15"));
+check("same seed produces identical random sequence", [rng1(), rng1(), rng1()].join(",") === [rng2(), rng2(), rng2()].join(","));
+
+try {
+  MidnightDailyRng.seedForDate("15-09-2026");
+  check("invalid date format is rejected", false);
+} catch (error) {
+  check("invalid date format is rejected", true);
+}
+
+try {
+  MidnightDailyRng.seedForDate("2026-02-30");
+  check("invalid calendar date is rejected", false);
+} catch (error) {
+  check("invalid calendar date is rejected", true);
+}
+
+out.textContent += "\n" + passed + " passed, " + failed + " failed\n";
+if (failed) document.title = "FAIL — Daily RNG tests";
+</script>
+</body>
+</html>
