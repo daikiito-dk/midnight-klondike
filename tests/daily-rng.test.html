@@ -40,9 +40,16 @@ check("same seed produces identical random sequence", [rng1(), rng1(), rng1()].j
 
 try {
   MidnightDailyRng.seedForDate("15-09-2026");
-  check("invalid date is rejected", false);
+  check("invalid date format is rejected", false);
 } catch (error) {
-  check("invalid date is rejected", true);
+  check("invalid date format is rejected", true);
+}
+
+try {
+  MidnightDailyRng.seedForDate("2026-02-30");
+  check("invalid calendar date is rejected", false);
+} catch (error) {
+  check("invalid calendar date is rejected", true);
 }
 
 out.textContent += "\n" + passed + " passed, " + failed + " failed\n";
