@@ -21,6 +21,17 @@
     if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
       throw new Error("Daily Deal date must be YYYY-MM-DD");
     }
+
+    const parsed = new Date(date + "T00:00:00Z");
+    if (
+      Number.isNaN(parsed.getTime()) ||
+      parsed.getUTCFullYear() !== Number(date.slice(0, 4)) ||
+      parsed.getUTCMonth() + 1 !== Number(date.slice(5, 7)) ||
+      parsed.getUTCDate() !== Number(date.slice(8, 10))
+    ) {
+      throw new Error("Daily Deal date must be a valid calendar date");
+    }
+
     return hashSeed("midnight-klondike:" + date);
   }
 
