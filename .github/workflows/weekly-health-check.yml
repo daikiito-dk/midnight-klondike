@@ -1,0 +1,32 @@
+name: Weekly Midnight Klondike Health Check
+
+on:
+  schedule:
+    - cron: '0 9 * * 1'  # 毎週月曜朝9時（UTC）
+  workflow_dispatch:     # 手動実行も可
+
+jobs:
+  health-check:
+    name: Repository Health Check & Maintenance
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run Copilot Autonomous Development Agent
+        uses: github/copilot-workspace-action@v1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          instruction: |
+            # GitHub Autonomous Development Agent
+
+            あなたはこのGitHubリポジトリの開発チームメンバーです。
+            
+            [先ほどのMissionテキスト全文を貼り付け]
