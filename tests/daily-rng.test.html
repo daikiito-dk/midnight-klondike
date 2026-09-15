@@ -32,7 +32,7 @@ const c = MidnightDailyRng.createDailyDeck("2026-09-16");
 check("same date produces identical deck", JSON.stringify(a) === JSON.stringify(b));
 check("different dates normally produce different decks", JSON.stringify(a) !== JSON.stringify(c));
 check("deck contains 52 unique cards", a.length === 52 && new Set(a).size === 52);
-check("deck contains every suit/rank combination", new Set(a).size === 52 && a.every(id => /^\d-[1-9]|\d-1[0-3]$/.test(id)));
+check("deck contains every suit/rank combination", new Set(a).size === 52 && a.every(id => /^\d-(?:[1-9]|1[0-3])$/.test(id)));
 
 const rng1 = MidnightDailyRng.createRng(MidnightDailyRng.seedForDate("2026-09-15"));
 const rng2 = MidnightDailyRng.createRng(MidnightDailyRng.seedForDate("2026-09-15"));
