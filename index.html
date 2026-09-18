@@ -965,16 +965,20 @@ function move(from, i, to, silent){
   if (!silent){ render(); updateHud(); checkWin(); }
 }
 
+function recycleStock(){
+  passes++;
+  if (passes > 1) score -= 20;
+  piles.stock = piles.waste.reverse();
+  piles.stock.forEach(id => cards[id].up = false);
+  piles.waste = [];
+}
+
 function draw(){
   if (won || busy) return;
   snapshot();
   if (piles.stock.length === 0){
     if (!piles.waste.length){ history.pop(); return; }
-    passes++;
-    if (passes > 1) score -= 20;
-    piles.stock = piles.waste.reverse();
-    piles.stock.forEach(id => cards[id].up = false);
-    piles.waste = [];
+    recycleStock();
     S.shuffle();
   } else {
     S.draw();
@@ -1092,14 +1096,14 @@ function autoFinish(){
       if (done) break;
     }
     if (!done){
-      if (piles.stock.length || piles.waste.length){
-        if (piles.stock.length === 0){
-          piles.stock = piles.waste.reverse();
-          piles.stock.forEach(id => cards[id].up = false);
-          piles.waste = [];
-        }
+      if (piles.stock.length === 0 && piles.waste.length){
+        recycleStock();
+        S.shuffle();
+        moves++;
+      } else if (piles.stock.length){
         const id = piles.stock.pop();
         cards[id].up = true; piles.waste.push(id); S.draw();
+        moves++;
       } else { busy = false; render(); updateHud(); checkWin(); return; }
     }
     render(); updateHud();
